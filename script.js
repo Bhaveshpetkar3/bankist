@@ -199,11 +199,28 @@ const btnLeft = document.querySelector('.slider__btn--left');
 const btnRight = document.querySelector('.slider__btn--right');
 let curSlide = 0;
 const maxSlide = slides.length - 1;
+const dotContainer=document.querySelector('.dots');
 // const slider=document.querySelector('.slider');
 // slider.style.transform='scale(0.4) translateX(-600px)';
 // slider.style.overflow='visible';
 //slides.forEach((s,i)=>(s.style.transform=`translateX(${100*i}%)`));
-
+const createDots=function()
+{
+  slides.forEach(function(s,i)
+  {
+    dotContainer.insertAdjacentHTML(
+      'beforeend',
+      `<button class="dots__dot" data-slide="${i}"></button>`
+    );
+  })
+}
+createDots();
+const actiVateDot=function(slide)
+{
+  document.querySelectorAll('.dots__dot').forEach(dot=>dot.classList.remove('dots__dot--active'));
+  document.querySelector(`.dots__dot[data-slide="${slide}"]`).classList.add('dots__dot--active');
+}
+actiVateDot(0);
 //next slide
 const gotoSlide = function (curSlide) {
   slides.forEach(
@@ -211,17 +228,41 @@ const gotoSlide = function (curSlide) {
   );
 };
 gotoSlide(0);
+//const dots = document.querySelectorAll('.dots__dot');
+// dots[0].classList.add('dots__dot--active');
+// dots.forEach(dot =>
+//   dot.addEventListener('click', function (e) {
+//     //console.log(e);
+//     dots.forEach(dot => dot.classList.remove('dots__dot--active'));
+//     e.target.classList.add('dots__dot--active');
+//     const slide = e.target.dataset.slide;
+//     //console.log(slide);
+//     gotoSlide(slide);
+//   })
+// );
+dotContainer.addEventListener('click',function(e)
+{
+  if(e.target.classList.contains('dots__dot'))
+  {
+    //dots.forEach(dot => dot.classList.remove('dots__dot--active'));
+    const slide = e.target.dataset.slide;
+    gotoSlide(slide);
+    actiVateDot(slide);
+  }
+})
 const prevSlide = function () {
   if (curSlide === 0) {
     curSlide = maxSlide;
   } else curSlide--;
   gotoSlide(curSlide);
+  actiVateDot(curSlide);
 };
 const nextSlide = function () {
   if (curSlide === maxSlide) {
     curSlide = 0;
   } else curSlide++;
   gotoSlide(curSlide);
+  actiVateDot(curSlide);
 };
 btnRight.addEventListener('click', nextSlide);
 btnLeft.addEventListener('click', prevSlide);
