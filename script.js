@@ -355,4 +355,5 @@ console.log(h1.previousElementSibling);//gives the previous direct element sibli
 
 console.log(h1.previousSibling);//gives previous sibling of type node
 console.log(h1.nextSibling);//gives next sibling of type node
+//haha
 */
