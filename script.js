@@ -132,114 +132,103 @@ nav.addEventListener('mouseout', function (e) {
 // })
 
 //Sticky navigation : Intersection Observer API
-const header=document.querySelector('.header');//selecting the header
-const navHeight=nav.getBoundingClientRect();//getting the height of the navigation bar
+const header = document.querySelector('.header'); //selecting the header
+const navHeight = nav.getBoundingClientRect(); //getting the height of the navigation bar
 //console.log(navHeight);
-const stickynav=function(entries)
-{
-  const [entry]=entries;//this will give the fist element of the array entries to entry variable
-  if(!entry.isIntersecting)//is intersecting means whether the header is intersecting with the current viewport
-  nav.classList.add('sticky');
-  else nav.classList.remove('sticky');//if header comes into the viewport, remove the sticky navbar
-}
-const headerObserver=new IntersectionObserver(stickynav,{//declaring the intersection observer api
-  root:null,
-  threshold:0,//threshold=0 means when the header is not in the viewport. This is because when the header is not in the viewport then only we want to add the sticky navbar
-  rootMargin: `-${navHeight.height}px`//basically we are turning the sticky nav bar a bit before than section 1
-})
-headerObserver.observe(header);//calling the api to observe the header
-
+const stickynav = function (entries) {
+  const [entry] = entries; //this will give the fist element of the array entries to entry variable
+  if (!entry.isIntersecting)
+    //is intersecting means whether the header is intersecting with the current viewport
+    nav.classList.add('sticky');
+  else nav.classList.remove('sticky'); //if header comes into the viewport, remove the sticky navbar
+};
+const headerObserver = new IntersectionObserver(stickynav, {
+  //declaring the intersection observer api
+  root: null,
+  threshold: 0, //threshold=0 means when the header is not in the viewport. This is because when the header is not in the viewport then only we want to add the sticky navbar
+  rootMargin: `-${navHeight.height}px`, //basically we are turning the sticky nav bar a bit before than section 1
+});
+headerObserver.observe(header); //calling the api to observe the header
 
 //Revealing elements on scroll
-const allSections=document.querySelectorAll('.section');//selcting all the sections
-const revealSection=function(entries,observer)
-{
-  const [entry]=entries;
+const allSections = document.querySelectorAll('.section'); //selcting all the sections
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
   //console.log(entry);
-  if(entry.isIntersecting)//if section is intersecting the viewport
-  {
-    entry.target.classList.remove('section--hidden');//remove the hidden class from the specific section
-    observer.unobserve(entry.target);//as the section is now visible remove the observer as it will be consuming resources
+  if (entry.isIntersecting) {
+    //if section is intersecting the viewport
+    entry.target.classList.remove('section--hidden'); //remove the hidden class from the specific section
+    observer.unobserve(entry.target); //as the section is now visible remove the observer as it will be consuming resources
   }
 };
-const sectionObserver=new IntersectionObserver(revealSection,{
-  root:null,
-  threshold: 0.2,//section will only be visible when it is 20% on the viewport
-
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.2, //section will only be visible when it is 20% on the viewport
 });
-allSections.forEach(function(section)
-{
+allSections.forEach(function (section) {
   sectionObserver.observe(section);
-  //section.classList.add('section--hidden');
-})
-
+  section.classList.add('section--hidden');
+});
 
 //Lazy loading Images
-const imgTargets=document.querySelectorAll('img[data-src]');//selecting only the images which have the attribute: data-src
+const imgTargets = document.querySelectorAll('img[data-src]'); //selecting only the images which have the attribute: data-src
 //console.log(imgTargets);
-const revealing=function(entries,observer)
-{
-  const [entry]=entries;
-  if(entry.isIntersecting)//if image is in the viewport
-  {
+const revealing = function (entries, observer) {
+  const [entry] = entries;
+  if (entry.isIntersecting) {
+    //if image is in the viewport
     //console.log(entry);
     //console.log(entry.target.dataset.src);
     //console.log(entry.target.src);
-    entry.target.src=`${entry.target.dataset.src}`;//replacing the low res image with high res image
-    entry.target.addEventListener('load',function()
-    {
-      entry.target.classList.remove('lazy-img');//removing the blur class from the image
-    })
-    observer.unobserve(entry.target);//as the image is already loaded, remove the observer from it
+    entry.target.src = `${entry.target.dataset.src}`; //replacing the low res image with high res image
+    entry.target.addEventListener('load', function () {
+      entry.target.classList.remove('lazy-img'); //removing the blur class from the image
+    });
+    observer.unobserve(entry.target); //as the image is already loaded, remove the observer from it
   }
-}
-const imgObserver=new IntersectionObserver(revealing,{
+};
+const imgObserver = new IntersectionObserver(revealing, {
   root: null,
-  threshold: 0.5,//after the image is half in the viewport, load it properly
+  threshold: 0.5, //after the image is half in the viewport, load it properly
 });
-imgTargets.forEach(img=>imgObserver.observe(img));//for all the images, call the observer
-
+imgTargets.forEach(img => imgObserver.observe(img)); //for all the images, call the observer
 
 //Implementing Slider Component
-const slides=document.querySelectorAll('.slide');
+const slides = document.querySelectorAll('.slide');
 const btnLeft = document.querySelector('.slider__btn--left');
 const btnRight = document.querySelector('.slider__btn--right');
-let curSlide=0;
-const maxSlide=slides.length-1;
+let curSlide = 0;
+const maxSlide = slides.length - 1;
 // const slider=document.querySelector('.slider');
 // slider.style.transform='scale(0.4) translateX(-600px)';
 // slider.style.overflow='visible';
 //slides.forEach((s,i)=>(s.style.transform=`translateX(${100*i}%)`));
 
 //next slide
-const gotoSlide=function(curSlide)
-{
+const gotoSlide = function (curSlide) {
   slides.forEach(
     (s, i) => (s.style.transform = `translateX(${100 * (i - curSlide)}%)`)
   );
-}
+};
 gotoSlide(0);
-const prevSlide=function()
-{
+const prevSlide = function () {
   if (curSlide === 0) {
     curSlide = maxSlide;
   } else curSlide--;
   gotoSlide(curSlide);
-}
-const nextSlide=function()
-{
+};
+const nextSlide = function () {
   if (curSlide === maxSlide) {
     curSlide = 0;
   } else curSlide++;
   gotoSlide(curSlide);
-}
-btnRight.addEventListener('click',nextSlide);
-btnLeft.addEventListener('click',prevSlide);
-document.addEventListener('keydown',function(e)
-{
+};
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
+document.addEventListener('keydown', function (e) {
   //console.log(e);
-  if(e.key==='ArrowLeft')prevSlide();
-  if(e.key==='ArrowRight')nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+  if (e.key === 'ArrowRight') nextSlide();
 });
 /*
 console.log(document.documentElement);//selects the entire document
